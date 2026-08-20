@@ -4,11 +4,15 @@
   "temporada": 3,
   "episodio": 8,
   "personajesImplicados": [
-    "daemond"
+    "daemond",
+    "ulf"
   ],
   "puntosComparacion": [
     {
       "aspecto": "Papel de Daemond"
+    },
+    {
+      "aspecto": "Papel de Ulf"
     }
   ]
 }
