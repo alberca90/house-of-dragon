@@ -1,17 +1,39 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import PersonajeCard from '../components/PersonajeCard.astro';
+import HitoCard from '../components/HitoCard.astro';
+import { getCollection } from 'astro:content';
 
+const personajesDestacados = (await getCollection('personajes')).slice(0, 4);
+const hitosDestacados = (await getCollection('hitos')).slice(0, 3);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Inicio">
+	<section class="py-10 text-center">
+		<h1 class="text-4xl font-bold">Fuego y Sangre vs. La Casa del Dragón</h1>
+		<p class="mx-auto mt-4 max-w-2xl text-neutral-400">
+			Un proyecto de prueba que compara la novela <em>Fuego y Sangre</em> de George R. R. Martin
+			con su adaptación en <em>La Casa del Dragón</em>, personaje a personaje y hito a hito.
+		</p>
+	</section>
+
+	<section class="mt-6">
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="text-2xl font-semibold">Personajes destacados</h2>
+			<a href="/personajes" class="text-sm underline hover:text-neutral-300">Ver todos</a>
+		</div>
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+			{personajesDestacados.map((personaje) => <PersonajeCard personaje={personaje} />)}
+		</div>
+	</section>
+
+	<section class="mt-10">
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="text-2xl font-semibold">Hitos destacados</h2>
+			<a href="/hitos" class="text-sm underline hover:text-neutral-300">Ver todos</a>
+		</div>
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+			{hitosDestacados.map((hito) => <HitoCard hito={hito} />)}
+		</div>
+	</section>
+</Layout>

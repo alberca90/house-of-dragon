@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  personaje: CollectionEntry<'personajes'>;
+}
+
+const { personaje } = Astro.props;
+const { nombre, casa, avatar } = personaje.data;
+---
+
+<a
+	href={`/personajes/${personaje.id}`}
+	class="block rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition hover:border-neutral-600"
+>
+	{avatar && <img src={avatar} alt={nombre} class="mb-3 h-40 w-full rounded object-cover" />}
+	<h3 class="text-lg font-semibold">{nombre}</h3>
+	<span class="text-xs uppercase tracking-wide text-neutral-400">{casa}</span>
+</a>

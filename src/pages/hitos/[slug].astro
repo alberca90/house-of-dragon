@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MarkdocContent from '../../components/MarkdocContent';
+import { getCollection } from 'astro:content';
+import { reader } from '../../lib/keystaticReader';
+
+export async function getStaticPaths() {
+	const hitos = await getCollection('hitos');
+	return hitos.map((hito) => ({ params: { slug: hito.id } }));
+}
+
+const { slug } = Astro.params;
+const hito = await reader.collections.hitos.readOrThrow(slug, {
+	resolveLinkedFiles: true,
+});
+const personajes = await getCollection('personajes');
+const personajesImplicados = personajes.filter((personaje) =>
+	hito.personajesImplicados.includes(personaje.id)
+);
+---
+
+<Layout title={hito.titulo}>
+	<span class="text-xs uppercase tracking-wide text-neutral-400">{hito.tipo}</span>
+	<h1 class="text-3xl font-bold">{hito.titulo}</h1>
+	{(hito.temporada || hito.episodio) && (
+		<p class="mt-1 text-sm text-neutral-400">
+			{hito.temporada && `Temporada ${hito.temporada}`}
+			{hito.episodio && ` · Episodio ${hito.episodio}`}
+		</p>
+	)}
+
+	{personajesImplicados.length > 0 && (
+		<p class="mt-4 text-sm">
+			Personajes implicados:{' '}
+			{personajesImplicados.map((personaje, i) => (
+				<>
+					<a href={`/personajes/${personaje.id}`} class="underline hover:text-neutral-300">
+						{personaje.data.nombre}
+					</a>
+					{i < personajesImplicados.length - 1 && ', '}
+				</>
+			))}
+		</p>
+	)}
+
+	{hito.resumenGeneral?.node && (
+		<div class="prose prose-invert mt-6 max-w-none">
+			<MarkdocContent field={hito.resumenGeneral} />
+		</div>
+	)}
+
+	<section class="mt-10">
+		<h2 class="mb-4 text-2xl font-semibold">Comparación libro vs serie</h2>
+		<div class="flex flex-col gap-6">
+			{hito.puntosComparacion.map((punto) => (
+				<div class="rounded-lg border border-neutral-800 p-4">
+					<h3 class="mb-3 font-semibold">{punto.aspecto}</h3>
+					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+						<div>
+							<span class="text-xs uppercase tracking-wide text-neutral-400">Libro</span>
+							<div class="prose prose-invert prose-sm mt-1 max-w-none">
+								{punto.versionLibro?.node && <MarkdocContent field={punto.versionLibro} />}
+							</div>
+						</div>
+						<div>
+							<span class="text-xs uppercase tracking-wide text-neutral-400">Serie</span>
+							<div class="prose prose-invert prose-sm mt-1 max-w-none">
+								{punto.versionSerie?.node && <MarkdocContent field={punto.versionSerie} />}
+							</div>
+						</div>
+					</div>
+				</div>
+			))}
+		</div>
+	</section>
+
+	{hito.conclusion?.node && (
+		<div class="prose prose-invert mt-6 max-w-none">
+			<MarkdocContent field={hito.conclusion} />
+		</div>
+	)}
+</Layout>

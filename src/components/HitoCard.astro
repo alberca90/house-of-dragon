@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  hito: CollectionEntry<'hitos'>;
+}
+
+const { hito } = Astro.props;
+const { titulo, tipo, temporada, episodio } = hito.data;
+---
+
+<a
+	href={`/hitos/${hito.id}`}
+	class="block rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition hover:border-neutral-600"
+>
+	<span class="text-xs uppercase tracking-wide text-neutral-400">{tipo}</span>
+	<h3 class="text-lg font-semibold">{titulo}</h3>
+	{(temporada || episodio) && (
+		<p class="mt-1 text-sm text-neutral-400">
+			{temporada && `Temporada ${temporada}`}
+			{episodio && ` · Episodio ${episodio}`}
+		</p>
+	)}
+</a>

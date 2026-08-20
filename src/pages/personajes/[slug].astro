@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HitoCard from '../../components/HitoCard.astro';
+import MarkdocContent from '../../components/MarkdocContent';
+import { getCollection } from 'astro:content';
+import { reader } from '../../lib/keystaticReader';
+
+export async function getStaticPaths() {
+	const personajes = await getCollection('personajes');
+	return personajes.map((personaje) => ({ params: { slug: personaje.id } }));
+}
+
+const { slug } = Astro.params;
+const personaje = await reader.collections.personajes.readOrThrow(slug, {
+	resolveLinkedFiles: true,
+});
+const hitosRelacionados = (await getCollection('hitos')).filter((hito) =>
+	hito.data.personajesImplicados.includes(slug)
+);
+---
+
+<Layout title={personaje.nombre}>
+	<div class="flex flex-col gap-6 sm:flex-row">
+		{personaje.avatar && (
+			<img
+				src={personaje.avatar}
+				alt={personaje.nombre}
+				class="h-56 w-56 rounded-lg object-cover"
+			/>
+		)}
+		<div>
+			<span class="text-xs uppercase tracking-wide text-neutral-400">{personaje.casa}</span>
+			<h1 class="text-3xl font-bold">{personaje.nombre}</h1>
+			<div class="prose prose-invert mt-4 max-w-none">
+				<MarkdocContent field={personaje.descripcion} />
+			</div>
+		</div>
+	</div>
+
+	{hitosRelacionados.length > 0 && (
+		<section class="mt-10">
+			<h2 class="mb-4 text-2xl font-semibold">Hitos relacionados</h2>
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+				{hitosRelacionados.map((hito) => <HitoCard hito={hito} />)}
+			</div>
+		</section>
+	)}
+</Layout>

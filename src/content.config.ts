@@ -1,10 +1,10 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-// Los campos `fields.markdoc` de Keystatic se guardan como un documento
-// estructurado (no como texto plano), por eso los tipamos como `z.any()`.
-// Los renderizaremos más adelante con el componente de Keystatic.
-const documentoMarkdoc = z.any();
+// Los campos `fields.markdoc` (descripcion, resumenGeneral, versionLibro, versionSerie,
+// conclusion) se guardan como archivos `.mdoc` separados, no dentro de este JSON.
+// Por eso no forman parte de este schema: se leen aparte con el reader de Keystatic
+// (ver src/lib/keystaticReader.ts) en las páginas de detalle.
 
 const personajes = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/personajes' }),
@@ -12,7 +12,6 @@ const personajes = defineCollection({
     nombre: z.string(),
     casa: z.enum(['targaryen', 'hightower', 'velaryon', 'otra']),
     avatar: z.string().optional(),
-    descripcion: documentoMarkdoc,
   }),
 });
 
@@ -24,15 +23,11 @@ const hitos = defineCollection({
     temporada: z.number().optional(),
     episodio: z.number().optional(),
     personajesImplicados: z.array(z.string()),
-    resumenGeneral: documentoMarkdoc,
     puntosComparacion: z.array(
       z.object({
         aspecto: z.string(),
-        versionLibro: documentoMarkdoc,
-        versionSerie: documentoMarkdoc,
       })
     ),
-    conclusion: documentoMarkdoc,
   }),
 });
 

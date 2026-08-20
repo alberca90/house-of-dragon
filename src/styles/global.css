@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-targaryen: #7a1f1f;
+  --color-hightower: #2f6f4f;
+  --color-velaryon: #1f4e7a;
+  --color-otra: #4b4b4b;
+}
