@@ -1,0 +1,14 @@
+{
+  "titulo": "Batalla de ladera",
+  "tipo": "batalla",
+  "temporada": 3,
+  "episodio": 8,
+  "personajesImplicados": [
+    "daemond"
+  ],
+  "puntosComparacion": [
+    {
+      "aspecto": "Papel de Daemond"
+    }
+  ]
+}
